@@ -74,13 +74,5 @@ public class Direccion {
         this.NumeroExterior = NumeroExterior;
     }
 
-    public Colonia getColonia() {
-        return Colonia;
-    }
-
-    public void setColonia(Colonia Colonia) {
-        this.Colonia = Colonia;
-    }
-    
     
 }

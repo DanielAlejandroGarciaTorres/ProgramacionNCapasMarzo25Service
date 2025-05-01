@@ -1,6 +1,7 @@
 package com.digis01.DGarciaPorgramacionNCapasMarzo25.RestController;
 
 import com.digis01.DGarciaPorgramacionNCapasMarzo25.DAO.AlumnoDAOImplementation;
+import com.digis01.DGarciaPorgramacionNCapasMarzo25.JPA.AlumnoDireccion;
 import com.digis01.DGarciaPorgramacionNCapasMarzo25.JPA.Result;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/alumnoapi")
 public class AlumnoRestController {
-    
+
     @Autowired
     private AlumnoDAOImplementation alumnoDAOImplementation;
-    
-    @GetMapping()
-    public ResponseEntity GetAll(){
+
+    @GetMapping
+    public ResponseEntity GetAll() {
         Result result = alumnoDAOImplementation.GetAllJPA();
-    
         if (result.correct) {
-            if (result.objects.isEmpty()){
+            if (result.objects.isEmpty()) {
                 return ResponseEntity.status(204).body(null);
             } else {
                 return ResponseEntity.ok(result);
@@ -35,7 +35,18 @@ public class AlumnoRestController {
             return ResponseEntity.status(404).body(null);
         }
     }
-    
-  
-    
+
+    @PostMapping("/Add")
+    public ResponseEntity Add(@RequestBody AlumnoDireccion alumnoDireccion) {
+
+        Result result = alumnoDAOImplementation.AddJPA(alumnoDireccion);
+
+        if (result.correct) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
 }

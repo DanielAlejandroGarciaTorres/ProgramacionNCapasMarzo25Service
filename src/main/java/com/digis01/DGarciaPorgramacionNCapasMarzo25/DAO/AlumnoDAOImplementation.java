@@ -56,6 +56,28 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
 
     }
 
+    @Transactional
+    @Override
+    public Result AddJPA(AlumnoDireccion alumnoDireccion) {
+        Result result = new Result();
+        
+        try {
+            
+            entityManager.persist(alumnoDireccion.Alumno);
+            
+            alumnoDireccion.Direccion.Alumno = alumnoDireccion.Alumno;
+            entityManager.persist(alumnoDireccion.Direccion);
+            
+            result.correct = true;
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
+    }
+
     
 
 }
