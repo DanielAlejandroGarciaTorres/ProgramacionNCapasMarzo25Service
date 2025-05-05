@@ -10,5 +10,7 @@ public interface IAlumnoDAO {
     Result GetAllJPA();
     
     Result AddJPA(AlumnoDireccion alumnoDireccion);
+ 
+    Result AlumnoDelete(int IdAlumno);
     
 }

@@ -1,7 +1,9 @@
 package com.digis01.DGarciaPorgramacionNCapasMarzo25.DAO;
 
 
+import com.digis01.DGarciaPorgramacionNCapasMarzo25.JPA.Alumno;
 import com.digis01.DGarciaPorgramacionNCapasMarzo25.JPA.AlumnoDireccion;
+import com.digis01.DGarciaPorgramacionNCapasMarzo25.JPA.Direccion;
 import com.digis01.DGarciaPorgramacionNCapasMarzo25.JPA.Result;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -76,6 +78,39 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
         }
         
         return result;
+    }
+
+    @Override
+    @Transactional
+    public Result AlumnoDelete(int IdAlumno) {
+        
+        Result result = new Result();
+        
+        try {
+            
+            TypedQuery<Direccion> queryDireccionesAlumno = entityManager.createQuery("FROM Direccion WHERE Alumno.IdAlumno = :idalumno", Direccion.class);
+            queryDireccionesAlumno.setParameter("idalumno", IdAlumno);
+            List<Direccion> direcciones = queryDireccionesAlumno.getResultList();
+            
+            //entityManager.remove(direcciones); ESTO NO
+            
+            Alumno alumno = entityManager.find(Alumno.class, IdAlumno);
+            
+            for (Direccion direccione : direcciones) {
+                entityManager.remove(direccione);
+            }
+            
+            entityManager.remove(alumno); //ESTO SI
+            
+            result.correct = true;
+        } catch (Exception ex) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
+        
     }
 
     
