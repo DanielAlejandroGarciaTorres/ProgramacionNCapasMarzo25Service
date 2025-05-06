@@ -113,6 +113,27 @@ public class AlumnoDAOImplementation implements IAlumnoDAO {
         
     }
 
+    @Override
+    public Result GetById(int IdAlumno) {
+        Result result = new Result();
+        
+        try {
+            
+            entityManager.find(com.digis01.DGarciaPorgramacionNCapasMarzo25.JPA.Alumno.class, IdAlumno);
+            
+            
+        } catch (Exception ex ) {
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex ;
+        }
+        
+        return result; 
+    }
+
+    
+    
+    
     
 
 }

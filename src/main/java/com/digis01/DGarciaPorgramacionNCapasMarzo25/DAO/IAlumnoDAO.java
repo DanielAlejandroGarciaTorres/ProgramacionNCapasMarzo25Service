@@ -13,4 +13,5 @@ public interface IAlumnoDAO {
  
     Result AlumnoDelete(int IdAlumno);
     
+    Result GetById(int IdAlumno);
 }

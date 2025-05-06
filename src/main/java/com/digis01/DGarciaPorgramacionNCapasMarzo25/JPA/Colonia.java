@@ -25,9 +25,9 @@ public class Colonia {
     @Column(name = "codigopostal")
     private String CodigoPostal;
     
-//    @JoinColumn(name = "idmunicipios")
-//    @ManyToOne
-//    public Municipio Municipio;
+    @JoinColumn(name = "idmunicipio")
+    @ManyToOne
+    public Municipio Municipio;
 
     public int getIdColonia() {
         return IdColonia;
