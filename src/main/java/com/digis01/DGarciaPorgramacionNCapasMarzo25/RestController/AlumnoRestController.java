@@ -78,8 +78,8 @@ public class AlumnoRestController {
     }
 
     @PostMapping("/CargaMasiva")
-    public ResponseEntity CargaMasiva(@RequestParam MultipartFile archivo) {
-
+    public ResponseEntity CargaMasiva(@RequestParam("archivo") MultipartFile archivo) {
+        Result result = new Result();
         if (!archivo.isEmpty() || archivo != null) {
 
             try {
@@ -89,7 +89,7 @@ public class AlumnoRestController {
                 String path = "src/main/resources/static/archivos"; //Path relativo dentro del proyecto
                 String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmSS"));
                 String absolutePath = root + "/" + path + "/" + fecha + archivo.getOriginalFilename();
-
+                archivo.transferTo(new File(absolutePath));
                 //Leer el archivo
                 List<AlumnoDireccion> listaAlumnos = new ArrayList();
                 if (tipoArchivo.equals("txt")) {
@@ -99,23 +99,60 @@ public class AlumnoRestController {
                 }
 
                 //Validar el archivo
-                List<ResultFile> listaErrores = ValidarArchivo(listaAlumnos);
+                List<ResultFile> listaErrores = new ArrayList<>();//ValidarArchivo(listaAlumnos);
 
                 if (listaErrores.isEmpty()) {
                     //Proceso mi archivo
-                    archivo.transferTo(new File(absolutePath));
-                    return ResponseEntity.ok(listaErrores); //ResultFile o Result?
+                    result.correct = true;
+                    result.object = absolutePath;
+                    return ResponseEntity.ok(result); //ResultFile o Result?
                 } else {
-                    return ResponseEntity.noContent().build();
+                    result.correct = false;
+                    result.objects = new ArrayList();
+
+                    for (ResultFile error : listaErrores) {
+                        result.objects.add(error);
+                    }
+
+                    return ResponseEntity.status(400).body(result);
                 }
 
             } catch (Exception ex) {
                 return ResponseEntity.status(500).body("Todo mal");
             }
 
+        } else {
+            result.correct = false;
+            return ResponseEntity.status(400).body(result);
         }
-        
-        return null;
+
+    }
+
+    @PostMapping("/CargaMasiva/Procesar")
+    public ResponseEntity Procesar(@RequestBody String absolutePath) {
+        Result result = new Result();
+
+        try {
+            String tipoArchivo = absolutePath.split("\\.")[1];
+
+            List<AlumnoDireccion> listaAlumnos = new ArrayList();
+            if (tipoArchivo.equals("txt")) {
+                listaAlumnos = LecturaArchivoTXT(new File(absolutePath)); //método para leer la lista
+            } else {
+                listaAlumnos = LecturaArchivoExcel(new File(absolutePath));
+            }
+
+            for (AlumnoDireccion alumno : listaAlumnos) {
+                alumnoDAOImplementation.AddJPA(alumno);
+            }
+
+            result.correct = true;
+
+        } catch (Exception ex) {
+            result.correct = false;
+        }
+
+        return ResponseEntity.ok(result);
     }
 
     public List<AlumnoDireccion> LecturaArchivoTXT(File archivo) {
@@ -174,10 +211,10 @@ public class AlumnoRestController {
                     alumnoDireccion.Alumno.setApellidoPaterno(row.getCell(1).toString());
                     alumnoDireccion.Alumno.setApellidoMaterno(row.getCell(2).toString());
                     alumnoDireccion.Alumno.setEmail(row.getCell(3).toString());
-                    alumnoDireccion.Alumno.Semestre = new Semestre();
-                    alumnoDireccion.Alumno.Semestre.setIdSemestre(Integer.parseInt(row.getCell(4).toString()));
+                    //alumnoDireccion.Alumno.Semestre = new Semestre();
+                    //alumnoDireccion.Alumno.Semestre.setIdSemestre(Integer.parseInt(row.getCell(4).toString()));
                     //alumnoDireccion.Alumno.setStatus(row.getCell(3) != null ? (int) row.getCell(3).getNumericCellValue() : 0 );
-
+                    listaAlumnos.add(alumnoDireccion);
                 }
 
             }

@@ -1,0 +1,3 @@
+Sebastian||Hernandez|Sebas21|sebas@gmail.com|PassSebas@1|1972-02-10|5577334455|5533445599|M|SAHL990810HMCNRS04|3|Paloma|10|520|10
+Sandra||Zaragoza|Sandy29|sandy@gmail.com|PassSand@29|1990-12-31|5577334455|5533445599|F|SAHL930811HMHNRS04|3|Vallarta|230|2900|20
+Angeles|Quinto|Tlaxcatecatl|Angy75|Angy90@yahoo.com|PassAngy_87|1965-06-05|5512345678|5598780978|F|SAHL990810HMCNRS04|3|Revolucion|26|41|30
